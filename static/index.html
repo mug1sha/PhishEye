@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PhishEye — URL Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center">
+    <div class="p-6 max-w-2xl w-full bg-white shadow rounded">
+        <h1 class="text-2xl font-bold mb-4">PhishEye — URL Analyzer</h1>
+        <p class="mb-4 text-sm text-slate-600">Paste any URL to check risk (privacy-first: not stored).</p>
+        <div class="mb-4">
+            <input id="urlInput" class="w-full border p-2 rounded" placeholder="https://example.com/login" />
+        </div>
+        <div class="flex gap-2 mb-4">
+            <button id="analyzeBtn" class="px-4 py-2 bg-blue-600 text-white rounded">Analyze</button>
+            <button id="clearBtn" class="px-4 py-2 bg-slate-200 rounded">Clear</button>
+        </div>
+        <div id="result" class="mt-4"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
