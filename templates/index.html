@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhishEye | URL Risk Scanner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css"
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-eye"></i> Phish<span class="highlight">Eye</span></h1>
+    <p class="tagline">Paste a suspicious URL to assess its phishing risk</p>
+
+    <form id="urlForm">
+      <input type="url" id="urlInput" placeholder="https://example.com/suspicious-link" required />
+      <button type="submit"><i class="fas fa-search"></i> Analyze</button>
+    </form>
+
+    <div id="result" class="hidden">
+      <h2>🔍 Analysis Result</h2>
+      <p><strong>Domain:</strong> <span id="domain"></span></p>
+      <p><strong>Risk Score:</strong> <span id="score"></span></p>
+      <div id="scoreBar"></div>
+      <ul id="reasons"></ul>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+body {
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+  background-color: #09093d;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: #151c2b;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #88e003;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.highlight {
+  color: #88e003;
+}
+
+.tagline {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+}
+
+form {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+input[type="url"] {
+  padding: 0.6rem;
+  width: 70%;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #88e003;
+  color: #151c2b;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #aaff00;
+}
+
+#result {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+#scoreBar {
+  height: 20px;
+  border-radius: 10px;
+  margin: 0.5rem 0 1rem;
+  background: #333;
+  overflow: hidden;
+}
+
+#scoreBar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 0%;
+  background-color: #88e003;
+  transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+.hidden {
+  display: none;
+}
