@@ -1,51 +1,48 @@
-from flask import Flask, request, jsonify, render_template
-import validators, tldextract, requests, re
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+from scanner import perform_full_scan
+import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+class URLRequest(BaseModel):
+    url: str
 
-def assess_phishing(url):
-    score = 0
-    reasons = []
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-    if not validators.url(url):
-        return {"error": "Invalid URL"}
-
-    domain_info = tldextract.extract(url)
-    full_domain = f"{domain_info.domain}.{domain_info.suffix}"
-
-    if re.search(r"(login|secure|update|verify|bank|account)", url, re.IGNORECASE):
-        score += 30
-        reasons.append("Suspicious keywords")
-
-    if url.count("-") > 2 or len(url) > 100:
-        score += 20
-        reasons.append("Obfuscated or long URL")
-
+@app.post("/analyze", response_class=JSONResponse)
+async def analyze_url(payload: URLRequest):
     try:
-        response = requests.get(url, timeout=3)
-        if response.status_code != 200:
-            score += 20
-            reasons.append("Non-200 response")
-    except:
-        score += 30
-        reasons.append("Unreachable or blocked")
+        result = perform_full_scan(payload.url)
+        domain = result["osint"].get("domain", "N/A")
+        reasons = []
 
-    score = min(score, 100)
-    return {
-        "score": score,
-        "domain": full_domain,
-        "reasons": reasons
-    }
+        vt_score = result["virustotal"]["data"]["attributes"]["stats"]["malicious"]
+        if vt_score > 0:
+            reasons.append("⚠️ Detected by VirusTotal")
 
-@app.route("/analyze", methods=["POST"])
-def analyze():
-    data = request.json
-    result = assess_phishing(data.get("url", ""))
-    return jsonify(result)
+        if result["google_safe"].get("matches"):
+            reasons.append("⚠️ Flagged by Google Safe Browsing")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        if result["urlscan"].get("verdicts", {}).get("overall", {}).get("score", 0) > 3:
+            reasons.append("⚠️ Suspicious behavior on urlscan.io")
+
+        score = min(vt_score * 30 + len(reasons) * 20, 100)
+
+        return {
+            "domain": domain,
+            "score": score,
+            "reasons": reasons
+        }
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
